@@ -1,3 +1,5 @@
+![](https://github.com/ajf58/bzip2-elixir/workflows/.github/workflows/elixir.yml/badge.svg)
+
 # Bzip2
 
 An Elixir binding to [libbzip2](https://www.sourceware.org/bzip2/index.html) - a lossless compression library.
