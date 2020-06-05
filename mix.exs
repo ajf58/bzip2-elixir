@@ -21,7 +21,7 @@ defmodule Bzip2.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:libbzip2, git: "https://sourceware.org/git/bzip2.git", tag: "bzip2-1.0.8", app: false, compile: "make -f Makefile-libbz2_so"}
+      {:libbzip2, git: "https://sourceware.org/git/bzip2.git", tag: "bzip2-1.0.8", app: false}
     ]
   end
 end
