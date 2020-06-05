@@ -1,4 +1,4 @@
-![](https://github.com/ajf58/bzip2-elixir/workflows/.github/workflows/elixir.yml/badge.svg)
+![Elixir CI](https://github.com/ajf58/bzip2-elixir/workflows/Elixir%20CI/badge.svg)
 
 # Bzip2
 
