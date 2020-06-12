@@ -5,11 +5,28 @@ defmodule Bzip2 do
 
   @on_load {:init, 0}
 
-  app = Mix.Project.config()[:app]
-
   def init do
-    path = :filename.join(:code.priv_dir(unquote(app)), 'bzip2_nif')
-    :ok = :erlang.load_nif(path, 0)
+    :ok = :erlang.load_nif('priv/bzip2_nif', 0)
+  end
+
+  @doc ~S"""
+  Open a bzstream resource, ready for use for compression or decompreession.
+
+      iex> _bz = Bzip2.open()
+  """
+  def open() do
+    raise "NIF open/0 not implemented"
+  end
+
+  @doc ~S"""
+  Prepares for compression, using default settings for block size, verbosity,
+  and work factor.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.compressInit(bz)
+  """
+  def compressInit(_) do
+    raise "NIF compressInit/1 not implemented"
   end
 
   @doc ~S"""
