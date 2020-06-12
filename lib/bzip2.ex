@@ -23,7 +23,7 @@ defmodule Bzip2 do
   and work factor.
 
       iex> bz = Bzip2.open()
-      ...> Bzip2.compressInit(bz)
+      ...> :ok = Bzip2.compressInit(bz)
   """
   def compressInit(_) do
     raise "NIF compressInit/1 not implemented"

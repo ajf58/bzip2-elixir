@@ -64,8 +64,8 @@ static ERL_NIF_TERM compressInit(ErlNifEnv* env, int argc, const ERL_NIF_TERM ar
     bz_stream *stream = NULL;
     enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
 
-    BZ2_bzCompressInit(stream, 9, 0, 0);
-    return argv[0];
+    int res = BZ2_bzCompressInit(stream, 9, 0, 0);
+    return enif_make_atom(env, res == BZ_OK ? "ok" : "error");
 }
 
 /* Get the version of the libbzip2 library. */
