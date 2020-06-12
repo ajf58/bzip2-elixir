@@ -12,7 +12,9 @@ defmodule Bzip2 do
   @doc ~S"""
   Open a bzstream resource, ready for use for compression or decompreession.
 
-      iex> _bz = Bzip2.open()
+      iex> bz = Bzip2.open()
+      ...> is_reference(bz)
+      true
   """
   def open() do
     raise "NIF open/0 not implemented"
