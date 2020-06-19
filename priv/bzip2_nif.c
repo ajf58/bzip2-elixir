@@ -1,5 +1,8 @@
 
 
+#include <stdbool.h>
+#include <string.h>
+
 #include <erl_nif.h>
 
 #include "bzlib.h"
@@ -68,6 +71,53 @@ static ERL_NIF_TERM compressInit(ErlNifEnv* env, int argc, const ERL_NIF_TERM ar
     return enif_make_atom(env, res == BZ_OK ? "ok" : "error");
 }
 
+static ERL_NIF_TERM compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    bz_stream *stream = NULL;
+    enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
+    ErlNifBinary in;
+    ErlNifBinary out = { 0 };
+    if (enif_inspect_binary(env, argv[1], &in)) {
+        stream->avail_in = in.size;
+        stream->next_in = (char *) in.data;
+        char *temp_out = enif_alloc(BZ_MAX_UNUSED);
+
+        while (true) {
+            stream->avail_out = BZ_MAX_UNUSED;
+            stream->next_out = temp_out;
+            int ret = BZ2_bzCompress(stream, BZ_FINISH);
+
+            unsigned int bytes_compressed = BZ_MAX_UNUSED - stream->avail_out;
+            if (bytes_compressed) {
+                // Write some compressed data
+                if (out.size) {
+                    enif_alloc_binary(bytes_compressed, &out);
+                    memcpy(&out.data, stream->next_out, bytes_compressed);
+                }
+                else {
+                    enif_realloc_binary(&out, out.size + bytes_compressed);
+                    memcpy(&out.data[out.size - bytes_compressed - 1], stream->next_out, bytes_compressed);
+                }
+            }
+            if (ret == BZ_STREAM_END) {
+                break;
+            }
+        }
+        enif_free(temp_out);
+    }
+    else {
+        // TODO handle the error case.
+    }
+
+    return enif_make_binary(env, &out);
+}
+
+static ERL_NIF_TERM compressEnd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    bz_stream *stream = NULL;
+    enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
+    int ret = BZ2_bzCompressEnd(stream);
+    return enif_make_atom(env, ret == BZ_OK ? "ok" : "error");
+}
+
 /* Get the version of the libbzip2 library. */
 static ERL_NIF_TERM libVersion(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
     return enif_make_string(env, BZ2_bzlibVersion(), ERL_NIF_LATIN1);
@@ -77,6 +127,8 @@ static ERL_NIF_TERM libVersion(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv
 static ErlNifFunc nif_funcs[] = {
     {"open", 0, open, 0},
     {"compressInit", 1, compressInit, 0},
+    {"compress", 2, compress, 0},
+    {"compressEnd", 1, compressEnd, 0},
     {"libVersion", 0, libVersion, 0}
 };
 

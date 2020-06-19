@@ -10,7 +10,7 @@ defmodule Bzip2 do
   end
 
   @doc ~S"""
-  Open a bzstream resource, ready for use for compression or decompreession.
+  Open a bz_stream resource, ready for use for compression or decompression.
 
       iex> bz = Bzip2.open()
       ...> is_reference(bz)
@@ -30,6 +30,31 @@ defmodule Bzip2 do
   """
   def compressInit(_) do
     raise "NIF compressInit/1 not implemented"
+  end
+
+  @doc ~S"""
+  Prepares for compression, using default settings for block size, verbosity,
+  and work factor.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.compressInit(bz)
+      ...> compressed = Bzip2.compress(bz, "hello world")
+      ...> IO.inspect(compressed)
+  """
+  def compress(_, _) do
+    raise "NIF compress/2 not implemented"
+  end
+
+  @doc ~S"""
+  Releases all memory associated with a compression stream.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.compressInit(bz)
+      ...> Bzip2.compressEnd(bz)
+      :ok
+  """
+  def compressEnd(_) do
+    raise "NIF compressEnd/1 not implemented"
   end
 
   @doc ~S"""
