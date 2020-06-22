@@ -39,7 +39,9 @@ defmodule Bzip2 do
       iex> bz = Bzip2.open()
       ...> Bzip2.compressInit(bz)
       ...> compressed = Bzip2.compress(bz, "hello world")
-      ...> IO.inspect(compressed)
+      ...> <<66, 90, 104, 57, 49, 65, 89, 38, 83, 89, 68, 247, 19, 120, 0, 0,
+      ...> 1, 145, 128, 64, 0, 6, 68, 144, 128, 32, 0, 34, 3, 52, 132, 48, 33,
+      ...> 182, 129, 84, 39, 139, 185, 34, 156, 40, 72, 34, 123, 137, 188, 0>> = compressed
   """
   def compress(_, _) do
     raise "NIF compress/2 not implemented"

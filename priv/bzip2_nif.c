@@ -89,7 +89,7 @@ static ERL_NIF_TERM compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
             unsigned int bytes_compressed = BZ_MAX_UNUSED - stream->avail_out;
             if (bytes_compressed) {
                 // Write some compressed data
-                if (out.size) {
+                if (out.size == 0) {
                     enif_alloc_binary(bytes_compressed, &out);
                     memcpy(out.data, temp_out, bytes_compressed);
                 }
