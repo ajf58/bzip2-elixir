@@ -118,6 +118,21 @@ static ERL_NIF_TERM compressEnd(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
     return enif_make_atom(env, ret == BZ_OK ? "ok" : "error");
 }
 
+/* Initialise a bzlib stream resource ready for decompression.
+
+    The bzlib stream context is initialized using the default values used by the bzip command line
+    program for compression.
+    TODO:
+        1. Add support for controlling these values by providing functions with higher arity.
+ */
+static ERL_NIF_TERM decompressInit(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    bz_stream *stream = NULL;
+    enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
+
+    int res = BZ2_bzDecompressInit(stream, 0, 0);
+    return enif_make_atom(env, res == BZ_OK ? "ok" : "error");
+}
+
 /* Get the version of the libbzip2 library. */
 static ERL_NIF_TERM libVersion(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
     return enif_make_string(env, BZ2_bzlibVersion(), ERL_NIF_LATIN1);
@@ -129,6 +144,7 @@ static ErlNifFunc nif_funcs[] = {
     {"compressInit", 1, compressInit, 0},
     {"compress", 2, compress, 0},
     {"compressEnd", 1, compressEnd, 0},
+    {"decompressInit", 1, decompressInit, 0},
     {"libVersion", 0, libVersion, 0}
 };
 

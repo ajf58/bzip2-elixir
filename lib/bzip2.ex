@@ -60,6 +60,18 @@ defmodule Bzip2 do
   end
 
   @doc ~S"""
+  Prepares for decompression, using default settings for verbosity
+  and memory usage.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.decompressInit(bz)
+      :ok
+  """
+  def decompressInit(_) do
+    raise "NIF decompressInit/1 not implemented"
+  end
+
+  @doc ~S"""
   Get the version of the underlying libbzip2 C library:
 
       iex> Bzip2.libVersion
