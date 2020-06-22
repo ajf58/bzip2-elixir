@@ -91,7 +91,7 @@ static ERL_NIF_TERM compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
                 // Write some compressed data
                 if (out.size) {
                     enif_alloc_binary(bytes_compressed, &out);
-                    memcpy(&out.data, stream->next_out, bytes_compressed);
+                    memcpy(out.data, temp_out, bytes_compressed);
                 }
                 else {
                     enif_realloc_binary(&out, out.size + bytes_compressed);
