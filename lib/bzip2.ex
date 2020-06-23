@@ -72,6 +72,21 @@ defmodule Bzip2 do
   end
 
   @doc ~S"""
+  Decompress some data previously compressed using bzip2.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.decompressInit(bz)
+      ...> Bzip2.decompress(bz,
+      ...> <<66, 90, 104, 57, 49, 65, 89, 38, 83, 89, 68, 247, 19, 120, 0, 0,
+      ...> 1, 145, 128, 64, 0, 6, 68, 144, 128, 32, 0, 34, 3, 52, 132, 48, 33,
+      ...> 182, 129, 84, 39, 139, 185, 34, 156, 40, 72, 34, 123, 137, 188, 0>>)
+      "hello world"
+  """
+  def decompress(_, _) do
+    raise "NIF decompress/2 not implemented"
+  end
+
+  @doc ~S"""
   Get the version of the underlying libbzip2 C library:
 
       iex> Bzip2.libVersion

@@ -133,6 +133,48 @@ static ERL_NIF_TERM decompressInit(ErlNifEnv* env, int argc, const ERL_NIF_TERM 
     return enif_make_atom(env, res == BZ_OK ? "ok" : "error");
 }
 
+/* Use a bzlib stream resource to decompress a binary.
+ */
+static ERL_NIF_TERM decompress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    bz_stream *stream = NULL;
+    enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
+    ErlNifBinary in;
+    ErlNifBinary out = { 0 };
+    if (enif_inspect_binary(env, argv[1], &in)) {
+        stream->avail_in = in.size;
+        stream->next_in = (char *) in.data;
+        char *temp_out = enif_alloc(BZ_MAX_UNUSED);
+
+        while (true) {
+            stream->avail_out = BZ_MAX_UNUSED;
+            stream->next_out = temp_out;
+            int ret = BZ2_bzDecompress(stream);
+
+            unsigned int bytes_decompressed = BZ_MAX_UNUSED - stream->avail_out;
+            if (bytes_decompressed) {
+                // Write some decompressed data
+                if (out.size == 0) {
+                    enif_alloc_binary(bytes_decompressed, &out);
+                    memcpy(out.data, temp_out, bytes_decompressed);
+                }
+                else {
+                    enif_realloc_binary(&out, out.size + bytes_decompressed);
+                    memcpy(&out.data[out.size - bytes_decompressed - 1], stream->next_out, bytes_decompressed);
+                }
+            }
+            if (ret != BZ_OK) {
+                break;
+            }
+        }
+        enif_free(temp_out);
+    }
+    else {
+        // TODO handle the error case.
+    }
+
+    return enif_make_binary(env, &out);
+}
+
 /* Get the version of the libbzip2 library. */
 static ERL_NIF_TERM libVersion(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
     return enif_make_string(env, BZ2_bzlibVersion(), ERL_NIF_LATIN1);
@@ -145,6 +187,7 @@ static ErlNifFunc nif_funcs[] = {
     {"compress", 2, compress, 0},
     {"compressEnd", 1, compressEnd, 0},
     {"decompressInit", 1, decompressInit, 0},
+    {"decompress", 2, decompress, 0},
     {"libVersion", 0, libVersion, 0}
 };
 
