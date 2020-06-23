@@ -121,7 +121,7 @@ static ERL_NIF_TERM compressEnd(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 /* Initialise a bzlib stream resource ready for decompression.
 
     The bzlib stream context is initialized using the default values used by the bzip command line
-    program for compression.
+    program for decompression.
     TODO:
         1. Add support for controlling these values by providing functions with higher arity.
  */
