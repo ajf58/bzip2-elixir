@@ -87,6 +87,18 @@ defmodule Bzip2 do
   end
 
   @doc ~S"""
+  Releases all memory associated with a decompression stream.
+
+      iex> bz = Bzip2.open()
+      ...> Bzip2.decompressInit(bz)
+      ...> Bzip2.decompressEnd(bz)
+      :ok
+  """
+  def decompressEnd(_) do
+    raise "NIF decompressEnd/1 not implemented"
+  end
+
+  @doc ~S"""
   Get the version of the underlying libbzip2 C library:
 
       iex> Bzip2.libVersion

@@ -175,6 +175,14 @@ static ERL_NIF_TERM decompress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv
     return enif_make_binary(env, &out);
 }
 
+/* Releases all memory associated with a decompression stream. */
+static ERL_NIF_TERM decompressEnd(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    bz_stream *stream = NULL;
+    enif_get_resource(env, argv[0], g_bz_stream_res_type, (void *)  &stream);
+    int ret = BZ2_bzDecompressEnd(stream);
+    return enif_make_atom(env, ret == BZ_OK ? "ok" : "error");
+}
+
 /* Get the version of the libbzip2 library. */
 static ERL_NIF_TERM libVersion(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
     return enif_make_string(env, BZ2_bzlibVersion(), ERL_NIF_LATIN1);
@@ -188,6 +196,7 @@ static ErlNifFunc nif_funcs[] = {
     {"compressEnd", 1, compressEnd, 0},
     {"decompressInit", 1, decompressInit, 0},
     {"decompress", 2, decompress, 0},
+    {"decompressEnd", 1, decompressEnd, 0},
     {"libVersion", 0, libVersion, 0}
 };
 
