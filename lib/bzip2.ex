@@ -101,8 +101,10 @@ defmodule Bzip2 do
   @doc ~S"""
   Get the version of the underlying libbzip2 C library:
 
-      iex> Bzip2.libVersion
-      '1.0.8, 13-Jul-2019'
+  The library should at least be version 1.x, and includes a date string. For
+  example '1.0.8, 13-Jul-2019'.
+      iex> String.match?(to_string(Bzip2.libVersion()), ~r/^1.[[:digit:].]+, [[:print:]+]/)
+      true
   """
   @spec libVersion() :: String.t()
   def libVersion() do
