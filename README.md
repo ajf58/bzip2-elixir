@@ -14,7 +14,7 @@ by adding `bzip2` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:bzip2, "~> 0.0.1"}
+    {:bzip2, "~> 0.1.0"}
   ]
 end
 ```
